@@ -1,6 +1,7 @@
 "use client";
 import { useMultiStepForm } from "@/context/formContext";
 import { useState, useRef } from "react";
+import { ButtonComp } from "../ui/button";
 
 export function Step2Form() {
   const [Languages, setLanguages] = useState([
@@ -70,10 +71,8 @@ export function Step2Form() {
         </label>
         <div className="flex flex-wrap gap-2">
           {Languages.map((lang) => (
-            <button
+            <ButtonComp
               key={lang}
-              type="button"
-              // {...form.register("language")}
               onClick={() => {
                 selectLanguage(lang);
               }}
@@ -82,16 +81,29 @@ export function Step2Form() {
                   ? "bg-black text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
-            >
-              {lang}
-            </button>
+              text={lang}
+            />
+
+            // <button
+            //   key={lang}
+            //   type="button"
+            //   onClick={() => {
+            //     selectLanguage(lang);
+            //   }}
+            //   className={`p-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+            //     selectedLanguage.includes(lang)
+            //       ? "bg-black text-white"
+            //       : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            //   }`}
+            // >
+            //   {lang}
+            // </button>
           ))}
-          <button
+          <ButtonComp
             className="bg-black text-white rounded-full h-9 w-9"
             onClick={() => setOpenModel(true)}
-          >
-            +
-          </button>
+            text="+"
+          />
           {openModel ? (
             <div className="flex flex-row gap-3">
               <input
@@ -100,14 +112,15 @@ export function Step2Form() {
                 ref={newLangRef}
                 placeholder="add Language"
               />
-              <button
-                className="bg-gray-200 text-black p-2 rounded-3xl"
+
+              <ButtonComp
+                className="bg-gray-200 text-black p-2 rounded cursor-pointer"
                 onClick={() => setOpenModel(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-black text-white rounded-3xl p-1"
+                text="Cancel"
+              />
+
+              <ButtonComp
+                className="bg-black text-white rounded p-1 cursor-pointer"
                 onClick={() => {
                   const value = newLangRef.current?.value.trim() ?? ""!;
                   if (!value) return;
@@ -115,9 +128,9 @@ export function Step2Form() {
                   setOpenModel(false);
                   selectLanguage(value);
                 }}
-              >
-                Submit
-              </button>
+                text="Submit"
+              />
+              
             </div>
           ) : (
             <></>

@@ -1,8 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
-import { Button } from "@/component/ui/button";
+import { ButtonComp } from "@/component/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   return (
     <div className="flex flex-row    min-w-screen min-h-screen  bg-zinc-50 font-sans  ">
       <motion.div
@@ -30,21 +32,45 @@ export default function Home() {
         >
           Select your Role:
         </motion.p>
-        <Button
-          text="I'm a Developer/Contributor"
-          url="/register"
-          role="CONTRIBUTOR"
+
+        <ButtonComp
+          whileHover={{ scale: 1.1, transition: { duration: 0.1 } }}
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 4, opacity: 1 }}
+          transition={{ duration: 1, ease: "easeIn" }}
+          className="p-4 bg-blue-300 text-black rounded-4xl font-semibold cursor-pointer"
+          onClick={() =>
+            router.push(`/register?role=${encodeURIComponent("CONTRIBUTOR")}`)
+          }
+          text="  I'm a Developer/Contributor"
         />
-        <Button
-          text="I'm a Verifier/Project Manager"
-          url="/register"
-          role="VERIFIER"
+
+
+        <ButtonComp
+          whileHover={{ scale: 1.1, transition: { duration: 0.1 } }}
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 4, opacity: 1 }}
+          transition={{ duration: 1, ease: "easeIn" }}
+          className="p-4 bg-blue-300 text-black rounded-4xl font-semibold cursor-pointer"
+          onClick={() =>
+            router.push(`/register?role=${encodeURIComponent("VERIFIER")}`)
+          }
+          text="  I'm a Verifier/Project Manager"
         />
-        <Button
+
+
+        <ButtonComp
+          whileHover={{ scale: 1.1, transition: { duration: 0.1 } }}
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 4, opacity: 1 }}
+          transition={{ duration: 1, ease: "easeIn" }}  
+          className="p-4 bg-blue-300 text-black rounded-4xl font-semibold cursor-pointer"
+          onClick={() =>
+            router.push(`/register?role=${encodeURIComponent("MAINTAINER")}`)
+          }
           text="I'm a Maintainer/Hiring Manager"
-          url="/register"
-          role="MAINTAINER"
         />
+
       </div>
     </div>
   );

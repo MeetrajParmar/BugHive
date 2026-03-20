@@ -49,7 +49,7 @@ export async function proxy(req: NextRequest) {
   if (!proxyData) {
     const { data: userDB } = await supabase
       .from("users")
-      .select("role, onboarding_complete") 
+      .select("role, onboarding_complete")
       .eq("email", user.email!)
       .maybeSingle();
 
@@ -61,7 +61,7 @@ export async function proxy(req: NextRequest) {
     };
 
     res.cookies.set(PROXY_COOKIE, JSON.stringify(proxyData), {
-      httpOnly: true, 
+      httpOnly: true,
       secure: true,
       sameSite: "lax",
       maxAge: COOKIE_MAX_AGE,
@@ -69,9 +69,10 @@ export async function proxy(req: NextRequest) {
     });
   }
 
-
   if (!proxyData.onboarding_complete && pathname !== "/onboarding") {
     return NextResponse.redirect(new URL("/onboarding", req.url));
+  } else if (proxyData.onboarding_complete && pathname!=="/dashboard/claims") {
+    return NextResponse.redirect(new URL("/dashboard/claims", req.url));
   }
 
   if (

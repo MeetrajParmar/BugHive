@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { Step1Form } from "@/component/onboarding/Step1";
 import { Step2Form } from "@/component/onboarding/Step2";
 import { Step3Form } from "@/component/onboarding/Step3";
@@ -8,6 +8,7 @@ import { useMultiStepForm } from "@/context/formContext";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 import { refreshCookie } from "@/utils/refreshCookie";
+import { ButtonComp } from "@/component/ui/button";
 
 export default function Onboard() {
   const { form, isLast, isFirst, currentPosition, previousStep, nextStep } =
@@ -44,35 +45,40 @@ export default function Onboard() {
             </div>
           </div>
 
-          <div className="mt-5 p-4">{steps[currentPosition]}</div>
-
+          <AnimatePresence mode="wait">
+            <motion.div
+              className="mt-5 p-4"
+              key={currentPosition}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 10 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.5 }}
+            >
+              {steps[currentPosition]}
+            </motion.div>
+          </AnimatePresence>
           <div className="flex flex-row justify-between p-2 ">
             <div>
               {!isFirst && (
-                <motion.button
-                  type="button"
+                <ButtonComp
                   className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-900 cursor-pointer"
                   onClick={previousStep}
-                >
-                  Prev
-                </motion.button>
+                  text="Prev"
+                />
               )}
             </div>
             {!isLast ? (
-              <motion.button
-                type="button"
+              <ButtonComp
                 className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-900 cursor-pointer"
-                onClick={nextStep} // ✅
-              >
-                Next
-              </motion.button>
+                onClick={nextStep}
+                text="Next"
+              />
             ) : (
-              <motion.button
-                type="submit" // ✅
+              <ButtonComp
+                type="submit"
                 className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800 cursor-pointer"
-              >
-                Submit
-              </motion.button>
+                text="Submit"
+              />
             )}
           </div>
         </div>
