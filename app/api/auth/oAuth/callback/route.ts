@@ -14,7 +14,6 @@ export async function GET(req: NextRequest) {
     const role = searchParams.get("role");
     const action = searchParams.get("action");
 
-    // console.log("ROLE", role);
 
     if (!code) {
       console.log("Error in getting GITHUB TOKEN.");
@@ -25,8 +24,6 @@ export async function GET(req: NextRequest) {
     }
 
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    // console.log(error);
-    // console.log(data);
 
     if (error) {
       console.log("Error in fetching GITHUB ERROR.", error);
@@ -35,6 +32,7 @@ export async function GET(req: NextRequest) {
         { status: 400 },
       );
     }
+    
     const appProvider = data.user.app_metadata.provider;
     const existingUser: UserDB = await findUser(data.user.email!);
     if (existingUser) {
@@ -46,7 +44,6 @@ export async function GET(req: NextRequest) {
             data.user.user_metadata.avatar_url,
             data.user.email!,
           );
-          //document.cookie = "x-proxy-data=; Max-Age=0; path=/";
         }
         return NextResponse.redirect(new URL("/dashboard/claims", req.url));
       }

@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = await supabase.auth.getUser();
 
     if (authUser?.email) {
-      await fetchUser(authUser.email); // ✅ This was missing
+      await fetchUser(authUser.email);
     }
   };
 
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } = await supabase.auth.getUser();
       if (user?.email) {
         await fetchUser(user.email);
-      }   
+      }
       setIsLoading(false);
     };
     getUser();
