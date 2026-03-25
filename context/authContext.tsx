@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .select("*")
         .eq("email", userEmail)
         .maybeSingle();
-      //console.log("AUTH CONTEXT:", data);
+      console.log("AUTH CONTEXT:", data);
       if (data) {
         setUser(data);
         setRole(data.role);
@@ -32,7 +32,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { user: authUser },
     } = await supabase.auth.getUser();
-
     if (authUser?.email) {
       await fetchUser(authUser.email);
     }

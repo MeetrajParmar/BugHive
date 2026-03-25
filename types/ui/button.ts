@@ -5,5 +5,7 @@ export interface ButtonProps extends MotionProps {
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
   className?: string;
-  text?:string
+  text?: string;
+  disabled?:boolean;
+  id?: string;
 }

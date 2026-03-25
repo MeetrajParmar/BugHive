@@ -8,13 +8,17 @@ import {
   CombinedFormSchema,
   type CombinedFormType,
 } from "@/lib/validations/onboarding";
-import { updateUserDetails } from "@/services/onboarding/updateUserDetails";
+import { step1Action } from "@/app/actions/onboarding/step1.action";
+import { step2Action } from "@/app/actions/onboarding/step2.action";
+import { step3Action } from "@/app/actions/onboarding/step3.action";
 
 const MutliStepFormContext = createContext<MultipleStepForm | null>(null);
 
 export function FormProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  const [currentPosition, setCurrentPosition] = useState(0);
+  const { user, refreshUser } = useAuth();
+  const [currentPosition, setCurrentPosition] = useState(
+    user?.onboarding_step! | 0,
+  );
   const form = useForm<CombinedFormType>({
     resolver: zodResolver(CombinedFormSchema),
     mode: "onChange",
@@ -38,34 +42,33 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
 
     const isValid = await form.trigger(currentSchema);
     if (!isValid) return;
-    console.log("currentPosition", currentPosition);
-
-    //Updating Form
+    
     const current_data = form.getValues();
-    if (current_data && currentPosition === 2) {
+
+    if (current_data && currentPosition === 0) {
       if (!user?.email) return;
-      await updateUserDetails(current_data, user?.email!);
+      await step1Action(current_data, user?.email!);
+      refreshUser();
+    } else if (current_data && currentPosition === 1) {
+      if (!user?.email) return;
+      await step2Action(current_data, user?.email!);
+      refreshUser();
+    } else if (current_data && currentPosition === 2) {
+      if (!user?.email) return;
+      await step3Action(current_data, user?.email!);
+      refreshUser();
     }
     setCurrentPosition((prev) => prev + 1);
-
-    console.log("Feild Data:", current_data);
   };
 
-  const previousStep = async () => {
-    setCurrentPosition((prev) => Math.max(prev - 1, 0));
-  };
-
-  const isFirst = currentPosition === 0;
   const isLast = currentPosition === 3;
 
   return (
     <MutliStepFormContext.Provider
       value={{
         currentPosition,
-        isFirst,
         isLast,
         nextStep,
-        previousStep,
         form,
       }}
     >

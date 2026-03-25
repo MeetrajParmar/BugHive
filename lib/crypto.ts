@@ -3,7 +3,9 @@ import crypto from "crypto";
 const algorithm = "aes-256-cbc";
 
 function getSecretKey(): Buffer {
-  const secret_key = process.env.ENCRYPTION_KEY;
+  const secret_key = process.env.ENCRYPTION_KEY!;
+  //console.log("KEY:", process.env.ENCRYPTION_KEY!);
+
   if (!secret_key) {
     throw new Error("ENCRYPTION_KEY environment variable is not set.");
   }
@@ -35,7 +37,7 @@ export function encrypt(text: string): {
 }
 
 export function decrypt(encryptData: string, iv: string): string {
-  const keyBuffer = getSecretKey(); 
+  const keyBuffer = getSecretKey();
 
   const decipher = crypto.createDecipheriv(
     algorithm,
@@ -46,14 +48,4 @@ export function decrypt(encryptData: string, iv: string): string {
   decrypted += decipher.final("utf-8");
 
   return decrypted;
-}
-
-export async function validate(text: string): Promise<boolean> {
-  const response = await fetch("https://api.github.com/user", {
-    headers: {
-      Authorization: `Bearer ${text}`,
-    },
-  });
-
-  return response.status !== 401;
 }

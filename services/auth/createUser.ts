@@ -13,7 +13,8 @@ export async function createUser(
   const { data, error } = await supabase.from("users").insert({
     github_username: github_username,
     email: github_email,
-    github_access_token: encrypt_token,
+    github_access_token: encrypt_token.encrytToken,
+    ivkey: encrypt_token.iv,
     github_avatar_url: github_avatar_url,
     github_connected: true,
     role: role,

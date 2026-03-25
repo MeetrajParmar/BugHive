@@ -2,6 +2,7 @@
 import { useMultiStepForm } from "@/context/formContext";
 import { useState, useRef } from "react";
 import { ButtonComp } from "../ui/button";
+import { useAuth } from "@/context/authContext";
 
 export function Step2Form() {
   const [Languages, setLanguages] = useState([
@@ -30,7 +31,6 @@ export function Step2Form() {
 
   const addtoLanguage = (text: string) => {
     if (!Languages.includes(text)) {
-      // LANGUAGES.push(text);
       setLanguages((prev) => [...prev, text]);
     }
   };
@@ -39,6 +39,7 @@ export function Step2Form() {
 
   return (
     <div className="flex flex-col gap-4 py-5">
+      {/* HEADLINE */}
       <div className="flex flex-col gap-1">
         <label className="text-sm font-semibold text-gray-700">Headline</label>
         <input
@@ -130,7 +131,6 @@ export function Step2Form() {
                 }}
                 text="Submit"
               />
-              
             </div>
           ) : (
             <></>

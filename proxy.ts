@@ -1,13 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-
-const PROXY_COOKIE = "x-proxy-data";
-const COOKIE_MAX_AGE = 60 * 5;
-
-type ProxyCookie = {
-  role: string;
-  onboarding_complete: boolean;
-};
+import { ProxyCookie } from "./types";
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -32,10 +25,10 @@ export async function proxy(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.redirect(new URL("/register", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  const cached = req.cookies.get(PROXY_COOKIE)?.value;
+  const cached = req.cookies.get("x-proxy-data")?.value;
   let proxyData: ProxyCookie | null = null;
 
   if (cached) {
@@ -60,18 +53,40 @@ export async function proxy(req: NextRequest) {
       onboarding_complete: userDB.onboarding_complete,
     };
 
-    res.cookies.set(PROXY_COOKIE, JSON.stringify(proxyData), {
+    res.cookies.set("x-proxy-data", JSON.stringify(proxyData), {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: COOKIE_MAX_AGE,
+      maxAge: 60 * 60 * 1,
       path: "/",
     });
   }
 
-  if (!proxyData.onboarding_complete && pathname !== "/onboarding") {
+  if (proxyData.role === "MAINTAINER") {
+    if (
+      !proxyData.onboarding_complete &&
+      pathname !== "/onboarding/maintainer"
+    ) {
+      return NextResponse.redirect(new URL("/onboarding/maintainer", req.url));
+    } else if (
+      proxyData.onboarding_complete &&
+      pathname !== "/dashboard/maintainer"
+    ) {
+      return NextResponse.redirect(new URL("/dashboard/maintainer", req.url));
+    }
+  }
+
+  if (
+    !proxyData.onboarding_complete &&
+    pathname !== "/onboarding" &&
+    proxyData.role === "CONTRIBUTOR"
+  ) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
-  } else if (proxyData.onboarding_complete && pathname!=="/dashboard/claims") {
+  } else if (
+    proxyData.onboarding_complete &&
+    pathname !== "/dashboard/claims" &&
+    proxyData.role === "CONTRIBUTOR"
+  ) {
     return NextResponse.redirect(new URL("/dashboard/claims", req.url));
   }
 
@@ -90,5 +105,10 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/onboarding", "/admin", "/dashboard/claims/:path*"],
+  matcher: [
+    "/onboarding/:path*",
+    "/admin",
+    "/dashboard/:path*",
+    "/dashboard/claims/:path*",
+  ],
 };

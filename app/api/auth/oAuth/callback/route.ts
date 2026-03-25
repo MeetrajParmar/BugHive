@@ -14,7 +14,6 @@ export async function GET(req: NextRequest) {
     const role = searchParams.get("role");
     const action = searchParams.get("action");
 
-
     if (!code) {
       console.log("Error in getting GITHUB TOKEN.");
       return NextResponse.json(
@@ -24,7 +23,8 @@ export async function GET(req: NextRequest) {
     }
 
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
+    console.log("Data:Session Details", data);
+    console.log("Provider Refresh Token", data.session?.provider_refresh_token);
     if (error) {
       console.log("Error in fetching GITHUB ERROR.", error);
       return NextResponse.json(
@@ -32,14 +32,14 @@ export async function GET(req: NextRequest) {
         { status: 400 },
       );
     }
-    
+
     const appProvider = data.user.app_metadata.provider;
     const existingUser: UserDB = await findUser(data.user.email!);
     if (existingUser) {
       if (!existingUser.github_connected) {
         if (action === "connect_github") {
           await updateUserGithub(
-            data.session.access_token,
+            data.session.provider_token!,
             data.user.user_metadata?.user_name,
             data.user.user_metadata.avatar_url,
             data.user.email!,
@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
         username,
         email,
         github_avatar_url!,
-        data.session?.access_token!,
+        data.session?.provider_token!,
         role!,
       );
     } else if (appProvider === "google") {
