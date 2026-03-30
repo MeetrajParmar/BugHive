@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
         },
       },
     );
-    console.log("PR Review:");
+    console.log("PR Review:",PR_Reviews);
 
     const fileChange = PR_FILES.data.map((item) => item.filename);
 

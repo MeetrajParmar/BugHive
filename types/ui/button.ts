@@ -1,4 +1,5 @@
 import { MotionProps } from "motion/react";
+import { Ref } from "react";
 
 export interface ButtonProps extends MotionProps {
   icon?: React.ReactNode;
@@ -6,6 +7,7 @@ export interface ButtonProps extends MotionProps {
   onClick?: () => void;
   className?: string;
   text?: string;
-  disabled?:boolean;
+  disabled?: boolean;
   id?: string;
+  ref?: Ref<HTMLButtonElement>;
 }
