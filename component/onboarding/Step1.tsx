@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/authContext";
 import { useMultiStepForm } from "@/context/formContext";
 import { checkName } from "@/controller/onboarding/checkName";
 import { useDebouncing } from "@/utils/debouncing";
@@ -18,6 +19,7 @@ export function Step1Form() {
 
     check();
   }, [debounceValue]);
+  
   const { form } = useMultiStepForm();
   const {
     register,
@@ -30,7 +32,7 @@ export function Step1Form() {
         id="username"
         type="text"
         className="border m-3 w-3xs bg-gray-200 rounded border-gray-300 p-2"
-        placeholder="Enter username.."
+        placeholder="Enter Your Name"
         {...register("username", {
           onChange: (e) => setUserName(e.target.value),
         })}
@@ -44,7 +46,6 @@ export function Step1Form() {
       {errors.username && (
         <p style={{ color: "red" }}>{errors.username.message}</p>
       )}
-            
     </div>
   );
 }

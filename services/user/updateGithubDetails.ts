@@ -19,6 +19,7 @@ export async function updateGithubDetails(
   const { data, error } = await supabase
     .from("users")
     .update({
+      onboarding_step: 4,
       github_username: username,
       github_connected: true,
       onboarding_complete: true,

@@ -6,6 +6,7 @@ export async function findUser(email: string) {
     .from("users")
     .select("*")
     .eq("email", email)
+    .eq("role", "CONTRIBUTOR")
     .maybeSingle();
   return data;
 }

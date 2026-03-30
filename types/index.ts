@@ -23,8 +23,11 @@ export type UserDB = {
   onboarding_complete: boolean;
   github_avataar_url: string;
   role: string;
+  onboarding_step: number;
   created_at: string;
   updated_at: string;
+  ivkey: string;
+  github_access_token: string;
 };
 
 export type Role = "ADMIN" | "CONTRIBUTOR" | "VERIFIER" | "MAINTAINER" | null;
@@ -49,10 +52,8 @@ export type FormStep = {
 
 export type MultipleStepForm = {
   currentPosition: number;
-  isFirst: boolean;
   isLast: boolean;
   nextStep: () => void;
-  previousStep: () => void;
   form: UseFormReturn<CombinedFormType>;
 };
 
@@ -70,4 +71,8 @@ export type FormDataResponse = {
 export type encrypted = {
   encrytToken: string;
   iv: string;
+};
+export type ProxyCookie = {
+  role: string;
+  onboarding_complete: boolean;
 };

@@ -1,16 +1,23 @@
 "use client";
 import { ButtonComp } from "@/component/ui/button";
 import { useAuth } from "@/context/authContext";
+import { motion, useSpring } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosNotifications } from "react-icons/io";
 
 export default function Navbar() {
   const [hasNotification, setHasNotification] = useState<boolean>(false);
   const { user, role } = useAuth();
   const [isModal, setIsModal] = useState<boolean>(false);
+  const [impactScore, setImpactScore] = useState<number>(0);
+  const impactScoreDisplay = useSpring(0, {
+    bounce: 0.5,
+    duration: 1000,
+  });
+
   return (
-    <div className="bg-mist-950 z-19 h-16 flex flex-row justify-between items-center">
+    <motion.div className="bg-mist-950 z-19 h-16 flex flex-row justify-between items-center">
       <div>
         <h1 className="text-white text-4xl px-5 font-bitcount ">
           Bug
@@ -26,7 +33,7 @@ export default function Navbar() {
           </span>
         </h2>
         <div className="h-5 w-px bg-gray-600" />
-        <h2 className="font-poppins">Impact Score:110</h2>
+        <h2 className="font-poppins">Impact Score:{impactScore}</h2>
       </div>
 
       <div className="flex flex-row px-4 gap-4 font-poppins text-sm">
@@ -48,6 +55,6 @@ export default function Navbar() {
           className="border rounded-full cursor-pointer hover:ring-2 hover:ring-emerald-500 transition-all"
         />
       </div>
-    </div>
+    </motion.div>
   );
 }

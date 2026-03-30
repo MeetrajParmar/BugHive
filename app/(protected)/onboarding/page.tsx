@@ -11,19 +11,25 @@ import { refreshCookie } from "@/utils/refreshCookie";
 import { ButtonComp } from "@/component/ui/button";
 
 export default function Onboard() {
-  const { form, isLast, isFirst, currentPosition, previousStep, nextStep } =
-    useMultiStepForm();
+  const { form, currentPosition, nextStep } = useMultiStepForm();
   const steps = [<Step1Form />, <Step2Form />, <Step3Form />, <Step4Form />];
   const stepLabel = ["Profile", "Skills", "Availability", "Github"];
   const router = useRouter();
-  const { refreshUser } = useAuth();
-  const onSubmit = form.handleSubmit((data) => {
-    //console.log("All steps valid, final data:", data);
-    router.push("/dashboard/claims");
-    refreshUser();
-    refreshCookie();
+  const { refreshUser, user } = useAuth();
+  const currentStep = user?.onboarding_step!;
+  const isLast = currentStep === steps.length - 1;
+  // console.log("CURRENT STEP:", currentStep);
+  // console.log("LAST STEP:", isLast);
+
+  const onSubmit = form.handleSubmit(async (data) => {
+    console.log("START");
+    await refreshCookie();
+    await refreshUser();
+    if (user?.github_connected) {
+      router.push("/dashboard/claims");
+    }
   });
-  const progress = ((currentPosition + 1) / steps.length) * 100;
+  const progress = ((currentStep! + 1) / steps.length) * 100;
 
   return (
     <>
@@ -41,7 +47,7 @@ export default function Onboard() {
             />
             <div>
               <h3 className="px-3 font-bold text-lg">{`${stepLabel[currentPosition]}`}</h3>
-              <span className=" text-sm text-gray-600 px-2 py-0.5">{`STEP ${currentPosition + 1} OF ${steps.length}`}</span>
+              <span className=" text-sm text-gray-600 px-2 py-0.5">{`STEP ${currentStep! + 1} OF ${steps.length}`}</span>
             </div>
           </div>
 
@@ -54,21 +60,13 @@ export default function Onboard() {
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.5 }}
             >
-              {steps[currentPosition]}
+              {steps[currentStep!]}
             </motion.div>
           </AnimatePresence>
-          <div className="flex flex-row justify-between p-2 ">
-            <div>
-              {!isFirst && (
-                <ButtonComp
-                  className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-900 cursor-pointer"
-                  onClick={previousStep}
-                  text="Prev"
-                />
-              )}
-            </div>
+          <div className="flex flex-row justify-end p-2 ">
             {!isLast ? (
               <ButtonComp
+                type="button"
                 className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-900 cursor-pointer"
                 onClick={nextStep}
                 text="Next"

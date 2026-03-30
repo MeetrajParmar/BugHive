@@ -9,6 +9,8 @@ export const ButtonComp = ({
   onClick,
   className,
   text,
+  disabled,
+  ref,
   ...rest
 }: ButtonProps) => {
   return (
@@ -16,6 +18,8 @@ export const ButtonComp = ({
       type={type}
       onClick={onClick}
       className={className}
+      disabled={disabled}
+      ref={ref}
       {...rest}
     >
       {icon && icon}

@@ -2,9 +2,11 @@
 import { motion } from "framer-motion";
 import { ButtonComp } from "@/component/ui/button";
 import { useRouter } from "next/navigation";
+import { encrypt } from "@/lib/crypto";
 
 export default function Home() {
   const router = useRouter();
+  
   return (
     <div className="flex flex-row    min-w-screen min-h-screen  bg-zinc-50 font-sans  ">
       <motion.div
@@ -39,12 +41,11 @@ export default function Home() {
           animate={{ y: 4, opacity: 1 }}
           transition={{ duration: 1, ease: "easeIn" }}
           className="p-4 bg-blue-300 text-black rounded-4xl font-semibold cursor-pointer"
-          onClick={() =>
-            router.push(`/register?role=${encodeURIComponent("CONTRIBUTOR")}`)
-          }
+          onClick={() => {
+            router.push(`/register?role=${encodeURIComponent("CONTRIBUTOR")}`);
+          }}
           text="  I'm a Developer/Contributor"
         />
-
 
         <ButtonComp
           whileHover={{ scale: 1.1, transition: { duration: 0.1 } }}
@@ -58,19 +59,17 @@ export default function Home() {
           text="  I'm a Verifier/Project Manager"
         />
 
-
         <ButtonComp
           whileHover={{ scale: 1.1, transition: { duration: 0.1 } }}
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 4, opacity: 1 }}
-          transition={{ duration: 1, ease: "easeIn" }}  
+          transition={{ duration: 1, ease: "easeIn" }}
           className="p-4 bg-blue-300 text-black rounded-4xl font-semibold cursor-pointer"
           onClick={() =>
             router.push(`/register?role=${encodeURIComponent("MAINTAINER")}`)
           }
           text="I'm a Maintainer/Hiring Manager"
         />
-
       </div>
     </div>
   );
