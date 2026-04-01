@@ -76,6 +76,7 @@ export type Database = {
           body: string | null
           changed_files_count: number | null
           deletions: number | null
+          evidence: string[] | null
           file_changes: string[] | null
           id: string
           issue_url: string | null
@@ -90,6 +91,7 @@ export type Database = {
           body?: string | null
           changed_files_count?: number | null
           deletions?: number | null
+          evidence?: string[] | null
           file_changes?: string[] | null
           id?: string
           issue_url?: string | null
@@ -104,6 +106,7 @@ export type Database = {
           body?: string | null
           changed_files_count?: number | null
           deletions?: number | null
+          evidence?: string[] | null
           file_changes?: string[] | null
           id?: string
           issue_url?: string | null

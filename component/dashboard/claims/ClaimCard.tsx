@@ -3,9 +3,12 @@ import { claimDB } from "@/types/dashboard/contributor/claimDB.types";
 import { useState } from "react";
 import { ButtonComp } from "@/component/ui/button";
 import { updateVisibility } from "@/services/dashboard/updateVisibility";
+import { MdPeopleAlt } from "react-icons/md";
 import { toast } from "react-toastify";
 import { FaGithub } from "react-icons/fa";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { sendMail } from "@/lib/mailer/mailer";
+import { useAuth } from "@/context/authContext";
 
 export function ClaimCard({ claim }: { claim: claimDB }) {
   const [claim_visibility, setClaim_Visibility] = useState<claimVisibilityType>(
@@ -13,7 +16,9 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
   );
   const [isChange, setIsChange] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const isVerified = claim.verifier_count >= 0;
+  const isVerified = claim.verifier_count > 0;
+  const router = useRouter();
+  const { user } = useAuth();
 
   const toggleClaimVisibility = () => {
     if (claim_visibility === "PUBLIC") {
@@ -40,6 +45,36 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
     }
   };
 
+  const handleEvidence = async (claimId: string) => {
+    console.log("CLICK:", claimId);
+    if (!claimId) {
+      toast.error("Claim Not Found!");
+      return;
+    }
+    console.log("route:", `/dashboard/claims/${claimId}/evidence`);
+    router.push(`/dashboard/claims/${claimId}/evidence`);
+  };
+
+  const handleVerification = async (claimId: string) => {
+    console.log("STARTED MAIL");
+    setIsSubmitting(true);
+    const response = await sendMail({
+      email: "meetrajparmar556@gmail.com",
+      sendTo: "22dit038@charusat.edu.in",
+      subject: `VERIFY ${user?.username} CLAIMS`,
+      text: `Demo EMAIL BODY. ${claimId}`,
+      html: "",
+    });
+    if (response?.messageId) {
+      toast.success(`EMAIL SEND`);
+      setIsSubmitting(false);
+    } else {
+      toast.error(`EMAIL FAILED`);
+      setIsSubmitting(false);
+      return;
+    }
+  };
+
   return (
     <div className="bg-zinc-950 p-2 rounded border border-gray-600">
       <h2 className="text-center text-white font-bold text-lg">
@@ -52,9 +87,9 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
           </div>
 
           <span
-            className={`px-3 py-1 rounded font-semibold  ${isVerified ? " text-amber-400 bg-amber-950 border-amber-800" : "bg-emerald-950 text-emerald-400 border border-emerald-800"}`}
+            className={`px-3 py-1 rounded font-semibold border ${!isVerified ? " text-amber-400 bg-amber-950 border-amber-800" : "bg-emerald-950 text-emerald-400 border border-emerald-800"}`}
           >
-            {isVerified ? "Awaiting Vertfication" : "Verified ✓"}
+            {!isVerified ? "Awaiting Vertfication" : "Verified ✓"}
           </span>
         </div>
       </div>
@@ -81,7 +116,9 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
       <div className="border-t border-zinc-800" />
 
       <div className="flex flex-row gap-3 py-3">
+        <MdPeopleAlt size={23} />
         <label className="text-gray-500">Verifier Count:</label>
+
         <p>{claim.verifier_count}</p>
       </div>
 
@@ -106,10 +143,16 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
         <ButtonComp
           text="Evidence"
           className="flex-1 py-2 text-sm font-semibold rounded-lg border border-zinc-700 text-zinc-300 hover:border-zinc-500 hover:text-white hover:bg-zinc-950  transition-colors cursor-pointer"
+          onClick={() => handleEvidence(claim.id)}
         />
         <ButtonComp
-          text="Send Verification"
-          className="flex-1 py-2 text-sm font-semibold rounded-lg border border-zinc-700 text-zinc-300 hover:border-zinc-500 hover:text-white hover:bg-zinc-950 cursor-pointer transition-colors"
+          text={!isSubmitting ? "Send Verification" : "Sending Email..."}
+          onClick={() => handleVerification(claim.id)}
+          className={`flex-1 py-2 text-sm font-semibold rounded-lg border  border-zinc-700 transition-colors ${
+            isSubmitting
+              ? " bg-zinc-900 cursor-not-allowed opacity-60"
+              : " hover:border-zinc-500 hover:text-white hover:bg-zinc-950"
+          }`}
         />
       </div>
       {isChange ? (

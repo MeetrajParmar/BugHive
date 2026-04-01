@@ -10,7 +10,7 @@ export type claimDB = {
   description: string;
   visibility_level: claimVisibilityType;
   verification_status: "PENDING" | "ACCEPT" | "DECLINED" | "EXPIRED";
-  verifier_count:number;
+  verifier_count: number;
   claim_impact_score: number;
   created_at: Timestamp;
   pr_table: {
@@ -22,9 +22,10 @@ export type claimDB = {
     deletions: number;
     issue_url: string;
     merged_at: string;
-    file_changes: string[]; 
+    file_changes: string[];
     pr_created_at: string;
     pr_updated_at: string;
+    evidences: string[];
     changed_files_count: number;
   };
 };
