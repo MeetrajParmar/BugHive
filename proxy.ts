@@ -82,13 +82,7 @@ export async function proxy(req: NextRequest) {
     proxyData.role === "CONTRIBUTOR"
   ) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
-  } else if (
-    proxyData.onboarding_complete &&
-    pathname !== "/dashboard/claims" &&
-    proxyData.role === "CONTRIBUTOR"
-  ) {
-    return NextResponse.redirect(new URL("/dashboard/claims", req.url));
-  }
+  } 
 
   if (
     proxyData.role !== "CONTRIBUTOR" &&

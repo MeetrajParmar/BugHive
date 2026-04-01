@@ -10,57 +10,54 @@ import { claimDB } from "@/types/dashboard/contributor/claimDB.types";
 import { ClaimCard } from "@/component/dashboard/claims/ClaimCard";
 
 export default function Claims() {
-  const [isChange, setIsChange] = useState<boolean>(false);
-  const [claims, setClaims] = useState<string | null>(null);
+  const [shareModal, setShareModal] = useState<boolean>(false);
   const [claimForm, setClaimForm] = useState<boolean>(false);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["claims"],
-    queryFn: allClaim,
+    queryFn: () => allClaim(),
   });
+
+  const openShareModal = () => {
+    setShareModal(!shareModal);
+  };
 
   if (isError) {
     console.log("Error in fetching Claims", error);
   }
   if (!data) return null;
   console.log("DATA LENGTH:", data);
-  const hasClaims = data.data.length > 0;
+  const hasClaims = data.length > 0;
 
   return (
-    <div className="min-w-screen min-h-screen bg-black bg-[radial-gradient(#444_1px,transparent_1px)] bg-size-[16px_16px]">
-      <Navbar />
-
-      <div className="relative">
-        {!hasClaims ? (
-          <div className="flex flex-col justify-center items-center relative min-h-[calc(100vh-64px)]">
-            <ButtonComp
-              onClick={() => setClaimForm(true)}
-              className="flex items-center justify-center bg-green-800 p-3 border border-green-500 rounded-full cursor-pointer hover:bg-green-900"
-              text="Add Your First Contribution Claims"
-            />
-          </div>
-        ) : (
-          <div className="flex flex-wrap gap-4 items-start p-6">
-            {data.data.map((claim: claimDB) => (
-              <div key={claim.id}>
-                <ClaimCard
-                  claim={claim}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {claimForm ? (
-          <ClaimsForm onClose={() => setClaimForm(false)} />
-        ) : (
+    <div className="relative">
+      {!hasClaims ? (
+        <div className="flex flex-col justify-center items-center relative min-h-[calc(100vh-64px)]">
           <ButtonComp
-            type="button"
-            text="Add Claims"
             onClick={() => setClaimForm(true)}
-            className="bg-green-800 p-3 z-10  border border-green-400 rounded-full fixed bottom-10 right-10 cursor-pointer hover:bg-green-900"
+            className="flex items-center justify-center bg-green-800 p-3 border border-green-500 rounded-full cursor-pointer hover:bg-green-900"
+            text="Add Your First Contribution Claims"
           />
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-4 items-start p-6">
+          {data.map((claim: claimDB) => (
+            <div key={claim.id}>
+              <ClaimCard claim={claim} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {claimForm ? (
+        <ClaimsForm onClose={() => setClaimForm(false)} />
+      ) : (
+        <ButtonComp
+          type="button"
+          text="Add Claims"
+          onClick={() => setClaimForm(true)}
+          className="bg-green-800 p-3 z-10  border border-green-400 rounded-full fixed bottom-10 right-10 cursor-pointer hover:bg-green-900"
+        />
+      )}
     </div>
   );
 }

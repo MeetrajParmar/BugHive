@@ -3,21 +3,16 @@ import { ButtonComp } from "@/component/ui/button";
 import { useAuth } from "@/context/authContext";
 import { motion, useSpring } from "motion/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoIosNotifications } from "react-icons/io";
 
 export default function Navbar() {
   const [hasNotification, setHasNotification] = useState<boolean>(false);
   const { user, role } = useAuth();
-  const [isModal, setIsModal] = useState<boolean>(false);
   const [impactScore, setImpactScore] = useState<number>(0);
-  const impactScoreDisplay = useSpring(0, {
-    bounce: 0.5,
-    duration: 1000,
-  });
 
   return (
-    <motion.div className="bg-mist-950 z-19 h-16 flex flex-row justify-between items-center">
+    <motion.div className="bg-mist-950 z-19 h-16 flex flex-row justify-between items-center border-b border-white">
       <div>
         <h1 className="text-white text-4xl px-5 font-bitcount ">
           Bug
