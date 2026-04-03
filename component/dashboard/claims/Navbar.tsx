@@ -10,7 +10,6 @@ export default function Navbar() {
   const [hasNotification, setHasNotification] = useState<boolean>(false);
   const { user, role } = useAuth();
   const [impactScore, setImpactScore] = useState<number>(0);
-
   return (
     <motion.div className="bg-mist-950 z-19 h-16 flex flex-row justify-between items-center border-b border-white">
       <div>
@@ -43,7 +42,7 @@ export default function Navbar() {
           )}
         </div>
         <Image
-          src={user?.github_avataar_url ?? "/profile.png"}
+          src={user?.github_avatar_url ?? "/profile.png"}
           width={35}
           height={35}
           alt="Profile photo"

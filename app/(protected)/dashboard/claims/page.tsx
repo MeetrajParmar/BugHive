@@ -10,22 +10,17 @@ import { claimDB } from "@/types/dashboard/contributor/claimDB.types";
 import { ClaimCard } from "@/component/dashboard/claims/ClaimCard";
 
 export default function Claims() {
-  const [shareModal, setShareModal] = useState<boolean>(false);
   const [claimForm, setClaimForm] = useState<boolean>(false);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["claims"],
     queryFn: () => allClaim(),
   });
 
-  const openShareModal = () => {
-    setShareModal(!shareModal);
-  };
-
   if (isError) {
     console.log("Error in fetching Claims", error);
   }
   if (!data) return null;
-  console.log("DATA LENGTH:", data);
+  //console.log("DATA LENGTH:", data);
   const hasClaims = data.length > 0;
 
   return (
@@ -48,14 +43,16 @@ export default function Claims() {
         </div>
       )}
 
-      {claimForm ? (
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : claimForm ? (
         <ClaimsForm onClose={() => setClaimForm(false)} />
       ) : (
         <ButtonComp
           type="button"
           text="Add Claims"
           onClick={() => setClaimForm(true)}
-          className="bg-green-800 p-3 z-10  border border-green-400 rounded-full fixed bottom-10 right-10 cursor-pointer hover:bg-green-900"
+          className="bg-green-800 p-3 z-10 border border-green-400 rounded-full fixed bottom-10 right-10 cursor-pointer hover:bg-green-900"
         />
       )}
     </div>
