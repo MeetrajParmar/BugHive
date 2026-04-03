@@ -21,7 +21,7 @@ export type UserDB = {
   token: string;
   github_connected: boolean;
   onboarding_complete: boolean;
-  github_avataar_url: string;
+  github_avatar_url: string;
   role: string;
   onboarding_step: number;
   created_at: string;

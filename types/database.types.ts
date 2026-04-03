@@ -76,7 +76,7 @@ export type Database = {
           body: string | null
           changed_files_count: number | null
           deletions: number | null
-          evidence: string[] | null
+          evidences: string[] | null
           file_changes: string[] | null
           id: string
           issue_url: string | null
@@ -91,7 +91,7 @@ export type Database = {
           body?: string | null
           changed_files_count?: number | null
           deletions?: number | null
-          evidence?: string[] | null
+          evidences?: string[] | null
           file_changes?: string[] | null
           id?: string
           issue_url?: string | null
@@ -106,7 +106,7 @@ export type Database = {
           body?: string | null
           changed_files_count?: number | null
           deletions?: number | null
-          evidence?: string[] | null
+          evidences?: string[] | null
           file_changes?: string[] | null
           id?: string
           issue_url?: string | null
@@ -210,6 +210,47 @@ export type Database = {
         }
         Relationships: []
       }
+      verifications: {
+        Row: {
+          claimid: string
+          created_at: string | null
+          id: string
+          sended_at: string | null
+          status: Database["public"]["Enums"]["verificationstatus"] | null
+          token: string | null
+          updated_at: string | null
+          verifier_email: string | null
+        }
+        Insert: {
+          claimid: string
+          created_at?: string | null
+          id?: string
+          sended_at?: string | null
+          status?: Database["public"]["Enums"]["verificationstatus"] | null
+          token?: string | null
+          updated_at?: string | null
+          verifier_email?: string | null
+        }
+        Update: {
+          claimid?: string
+          created_at?: string | null
+          id?: string
+          sended_at?: string | null
+          status?: Database["public"]["Enums"]["verificationstatus"] | null
+          token?: string | null
+          updated_at?: string | null
+          verifier_email?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verifications_claimid_fkey"
+            columns: ["claimid"]
+            isOneToOne: false
+            referencedRelation: "claims"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -226,6 +267,7 @@ export type Database = {
         | "REFACTOR"
         | "DOCUMENTATION"
         | "MENTORING"
+      emailverifierstatus: "PENDING" | "EXPIRED" | "VERIFIED"
       role: "ADMIN" | "CONTRIBUTOR" | "VERIFIER" | "MAINTAINER"
       verificationstatus: "PENDING" | "ACCEPT" | "DECLINED" | "EXPIRED"
     }
@@ -364,6 +406,7 @@ export const Constants = {
         "DOCUMENTATION",
         "MENTORING",
       ],
+      emailverifierstatus: ["PENDING", "EXPIRED", "VERIFIED"],
       role: ["ADMIN", "CONTRIBUTOR", "VERIFIER", "MAINTAINER"],
       verificationstatus: ["PENDING", "ACCEPT", "DECLINED", "EXPIRED"],
     },

@@ -1,4 +1,6 @@
 "use server";
+
+import { addVerifier } from "@/app/actions/claims/addVerifier";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 const transportOptions: SMTPTransport.Options = {
@@ -36,7 +38,7 @@ export async function sendMail({
     });
     //console.log("INFO:", info);
     console.log("Message Sent", info.messageId);
-    console.log("Mail sent to 22dit038@charusat.edu.in");
+    console.log(`Mail sent to ${sendTo}`);
     return info;
   } catch (error) {
     console.log("Something went Wrong.", error);

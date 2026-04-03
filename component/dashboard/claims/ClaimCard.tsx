@@ -1,14 +1,22 @@
 import { claimVisibilityType } from "@/lib/validations/claims";
 import { claimDB } from "@/types/dashboard/contributor/claimDB.types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ButtonComp } from "@/component/ui/button";
 import { updateVisibility } from "@/services/dashboard/updateVisibility";
 import { MdPeopleAlt } from "react-icons/md";
 import { toast } from "react-toastify";
 import { FaGithub } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { sendMail } from "@/lib/mailer/mailer";
 import { useAuth } from "@/context/authContext";
+import { getAllUser, getSearchUser } from "@/services/claimCard/getSearchUser";
+import UserCard from "./UserCard";
+import { useQuery } from "@tanstack/react-query";
+
+type userList = {
+  email: string;
+  github_username: string;
+  github_avatar_url: string;
+};
 
 export function ClaimCard({ claim }: { claim: claimDB }) {
   const [claim_visibility, setClaim_Visibility] = useState<claimVisibilityType>(
@@ -19,6 +27,9 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
   const isVerified = claim.verifier_count > 0;
   const router = useRouter();
   const { user } = useAuth();
+  const [shareModal, setShareModal] = useState<boolean>(false);
+  const [searchEmail, setSearchEmail] = useState<string>();
+  const [userList, setUserList] = useState<userList[]>();
 
   const toggleClaimVisibility = () => {
     if (claim_visibility === "PUBLIC") {
@@ -37,7 +48,7 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
         toast.error("Something went wrong.");
         return;
       }
-      toast.success("Updated Successfull");
+      toast.success("Updated Successfully");
       setIsSubmitting(false);
     } catch (error) {
       toast.error(`Update Failed ${error}`);
@@ -55,25 +66,19 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
     router.push(`/dashboard/claims/${claimId}/evidence`);
   };
 
-  const handleVerification = async (claimId: string) => {
-    console.log("STARTED MAIL");
-    setIsSubmitting(true);
-    const response = await sendMail({
-      email: "meetrajparmar556@gmail.com",
-      sendTo: "22dit038@charusat.edu.in",
-      subject: `VERIFY ${user?.username} CLAIMS`,
-      text: `Demo EMAIL BODY. ${claimId}`,
-      html: "",
-    });
-    if (response?.messageId) {
-      toast.success(`EMAIL SEND`);
-      setIsSubmitting(false);
-    } else {
-      toast.error(`EMAIL FAILED`);
-      setIsSubmitting(false);
-      return;
-    }
-  };
+  const { data, isLoading, isFetching, isError } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => getAllUser(),
+  });
+
+  useEffect(() => {
+    if (!searchEmail?.trim()) return;
+    const timer = setTimeout(async () => {
+      const data = await getSearchUser(searchEmail!);
+      setUserList(data);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchEmail]);
 
   return (
     <div className="bg-zinc-950 p-2 rounded border border-gray-600">
@@ -146,11 +151,11 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
           onClick={() => handleEvidence(claim.id)}
         />
         <ButtonComp
-          text={!isSubmitting ? "Send Verification" : "Sending Email..."}
-          onClick={() => handleVerification(claim.id)}
-          className={`flex-1 py-2 text-sm font-semibold rounded-lg border  border-zinc-700 transition-colors ${
-            isSubmitting
-              ? " bg-zinc-900 cursor-not-allowed opacity-60"
+          text={!shareModal ? "Send Verification" : "Close"}
+          onClick={() => setShareModal(!shareModal)}
+          className={`flex-1 py-2 text-sm font-semibold rounded-lg border  cursor-pointer  border-zinc-700 transition-colors ${
+            shareModal
+              ? "border-zinc-100"
               : " hover:border-zinc-500 hover:text-white hover:bg-zinc-950"
           }`}
         />
@@ -164,6 +169,55 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
             className={`p-1 ${isChange ? "bg-blue-600 border border-blue-400 hover:bg-blue-500 cursor-pointer" : "bg-blue-800 border border-blue-400"} rounded`}
           />
         </div>
+      ) : (
+        <></>
+      )}
+
+      {shareModal ? (
+        <section className="flex flex-col gap-3">
+          <input
+            type="text"
+            placeholder="Enter username or email"
+            className="p-1  text-white w-full bg-zinc-900 rounded"
+            onChange={(e) => {
+              setSearchEmail(e.target.value);
+            }}
+          />
+
+          <section className="flex flex-col gap-1">
+            <label className="text-zinc-400">Search Result</label>
+            <div className="border border-zinc-500" />
+            {userList
+              ?.filter((i) => i.email !== user?.email)
+              .map((i) => (
+                <div key={i.email}>
+                  <UserCard
+                    github_avatar_url={i.github_avatar_url}
+                    shareModal={() => setShareModal(!shareModal)}
+                    claimId={claim.id}
+                    verifier_email={i.email}
+                  />
+                </div>
+              ))}
+          </section>
+
+          <section className="flex flex-col gap-1">
+            <label className="text-zinc-400">Users</label>
+            <div className="border border-zinc-500" />
+            {data
+              ?.filter((data) => data.email !== user?.email)
+              .map((i) => (
+                <div key={i.email}>
+                  <UserCard
+                    github_avatar_url={i.github_avatar_url}
+                    shareModal={() => setShareModal(!shareModal)}
+                    claimId={claim.id}
+                    verifier_email={i.email}
+                  />
+                </div>
+              ))}
+          </section>
+        </section>
       ) : (
         <></>
       )}

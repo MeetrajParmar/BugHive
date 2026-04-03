@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 import { refreshCookie } from "@/utils/refreshCookie";
 import { ButtonComp } from "@/component/ui/button";
+import { updateOnboarding } from "@/app/actions/onboarding/updateOnboarding";
+import { toast } from "react-toastify";
 
 export default function Onboard() {
   const { form, currentPosition, nextStep } = useMultiStepForm();
@@ -26,10 +28,25 @@ export default function Onboard() {
     await refreshCookie();
     await refreshUser();
     if (user?.github_connected) {
+      toast.success("Onboarding Compelete");
       router.push("/dashboard/claims");
+      return;
     }
   });
   const progress = ((currentStep! + 1) / steps.length) * 100;
+
+  const toDashboard = async () => {
+    try {
+      await refreshUser();
+      await refreshCookie();
+      const res = await updateOnboarding(user?.email!);
+      if (res) {
+        toast.success("Onboarding Compelete");
+      }
+    } catch (error) {
+      toast.error("Onboarding Failed");
+    }
+  };
 
   return (
     <>
@@ -74,6 +91,7 @@ export default function Onboard() {
             ) : (
               <ButtonComp
                 type="submit"
+                onClick={toDashboard}
                 className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800 cursor-pointer"
                 text="Submit"
               />

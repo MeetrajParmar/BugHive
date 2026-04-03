@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/authContext";
 import { useMultiStepForm } from "@/context/formContext";
 import { checkName } from "@/controller/onboarding/checkName";
 import { useDebouncing } from "@/utils/debouncing";
@@ -19,7 +18,7 @@ export function Step1Form() {
 
     check();
   }, [debounceValue]);
-  
+
   const { form } = useMultiStepForm();
   const {
     register,
