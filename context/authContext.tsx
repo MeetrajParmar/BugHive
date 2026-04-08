@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .select("*")
         .eq("email", userEmail)
         .maybeSingle();
-      //console.log("AUTH CONTEXT:", data);
+      console.log("AUTH CONTEXT:", data);
       if (data) {
         setUser(data);
         setRole(data.role);
@@ -28,6 +28,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("Error fetching user:", err);
     }
   };
+
+
   const refreshUser = async () => {
     const {
       data: { user: authUser },
@@ -44,6 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: { user },
       } = await supabase.auth.getUser();
       if (user?.email) {
+        console.log("User found in supabase auth:", user);
         await fetchUser(user.email);
       }
       setIsLoading(false);

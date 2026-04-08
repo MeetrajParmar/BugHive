@@ -23,7 +23,7 @@ export default function Navbar() {
         <h2 className="font-bold text-lg">
           Welcome{" "}
           <span className="text-emerald-500">
-            {user?.github_username ?? "Users"}
+            {user?.github_username ?? user?.username ?? "User"}
           </span>
         </h2>
         <div className="h-5 w-px bg-gray-600" />

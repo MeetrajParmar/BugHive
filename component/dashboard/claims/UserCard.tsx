@@ -12,11 +12,13 @@ export default function UserCard({
   shareModal,
   claimId,
   verifier_email,
+  icon,
 }: {
-  github_avatar_url: string;
+  github_avatar_url?: string;
   shareModal: () => void;
   claimId: string;
   verifier_email: string;
+  icon?: React.ReactNode;
 }) {
   const { user } = useAuth();
 
@@ -45,7 +47,12 @@ export default function UserCard({
           <p>BugHive Private Limited</p>`,
       });
       if (response?.messageId) {
-        const data = await addVerifier(verifier_email, claimId);
+        const data = await addVerifier(
+          user?.id!,
+          verifier_email,
+          claimId,
+          token!,
+        );
         if (data) {
           toast.success(`EMAIL SEND`);
           setIsSubmitting(false);
@@ -60,19 +67,27 @@ export default function UserCard({
     } catch (error) {
       console.log(error);
       toast.error("Email Send Failed");
+      setIsSubmitting(false);
     }
   };
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   return (
     <div className="flex flex-row items-center px-2 gap-2 hover:border hover:border-zinc-500 py-2 justify-between">
-      <Image
-        src={github_avatar_url ?? "/profile.png"}
-        width={30}
-        height={30}
-        alt="github avttar url"
-        className="border rounded-full cursor-pointer hover:ring-2 hover:ring-emerald-500 transition-all"
-      />
+      {github_avatar_url ? (
+        <Image
+          src={github_avatar_url ?? "/profile.png"}
+          width={30}
+          height={30}
+          alt="github avttar url"
+          className="border rounded-full cursor-pointer hover:ring-2 hover:ring-emerald-500 transition-all"
+        />
+      ) : (
+        <div className="w-7.5 h-7.5 rounded-full border bg-zinc-700 flex items-center justify-center text-xs text-zinc-300 shrink-0">
+          {icon}
+        </div>
+      )}
+
       <p className="text-sm">{verifier_email}</p>
 
       <ButtonComp

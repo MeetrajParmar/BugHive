@@ -11,6 +11,7 @@ import { useAuth } from "@/context/authContext";
 import { getAllUser, getSearchUser } from "@/services/claimCard/getSearchUser";
 import UserCard from "./UserCard";
 import { useQuery } from "@tanstack/react-query";
+import { MdOutlineMail } from "react-icons/md";
 
 type userList = {
   email: string;
@@ -62,13 +63,14 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
       toast.error("Claim Not Found!");
       return;
     }
-    console.log("route:", `/dashboard/claims/${claimId}/evidence`);
+    //console.log("route:", `/dashboard/claims/${claimId}/evidence`);
     router.push(`/dashboard/claims/${claimId}/evidence`);
   };
 
   const { data, isLoading, isFetching, isError } = useQuery({
     queryKey: ["users"],
     queryFn: () => getAllUser(),
+    staleTime: 1000 * 60 * 60 * 5,
   });
 
   useEffect(() => {
@@ -187,18 +189,28 @@ export function ClaimCard({ claim }: { claim: claimDB }) {
           <section className="flex flex-col gap-1">
             <label className="text-zinc-400">Search Result</label>
             <div className="border border-zinc-500" />
-            {userList
-              ?.filter((i) => i.email !== user?.email)
-              .map((i) => (
-                <div key={i.email}>
-                  <UserCard
-                    github_avatar_url={i.github_avatar_url}
-                    shareModal={() => setShareModal(!shareModal)}
-                    claimId={claim.id}
-                    verifier_email={i.email}
-                  />
-                </div>
-              ))}
+            {userList?.length! > 0 ? (
+              userList
+                ?.filter((i) => i.email !== user?.email)
+                .map((i) => (
+                  <div key={i.email}>
+                    <UserCard
+                      github_avatar_url={i.github_avatar_url}
+                      shareModal={() => setShareModal(!shareModal)}
+                      claimId={claim.id}
+                      verifier_email={i.email}
+                    />
+                  </div>
+                ))
+            ) : (
+              <UserCard
+                github_avatar_url=""
+                icon={<MdOutlineMail />}
+                shareModal={() => setShareModal(!shareModal)}
+                claimId={claim.id}
+                verifier_email={searchEmail!}
+              />
+            )}
           </section>
 
           <section className="flex flex-col gap-1">

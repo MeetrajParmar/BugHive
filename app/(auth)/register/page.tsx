@@ -14,9 +14,16 @@ import { toast } from "react-toastify";
 
 export default function SignUp() {
   const searchParams = useSearchParams();
+  const token = searchParams.get("token?");
   const role = searchParams.get("role");
+  const action = searchParams.get("action") || "register";
   const isMaintainer = role === "MAINTAINER";
+  const isVerifier = role === "VERIFIER";
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  console.log("Role:", role);
+  console.log("Action:", action);
+  console.log("Token:", token);
 
   const {
     register,
@@ -48,13 +55,20 @@ export default function SignUp() {
 
   return (
     <>
-      <h2 className="text-black text-4xl ">Sign into your account</h2>
+      {!isVerifier ? (
+        <h2 className="text-black text-4xl ">Sign into your account</h2>
+      ) : (
+        <h2 className="text-center text-black text-4xl">
+          Create a free account to submit your verification
+        </h2>
+      )}
+
       <div className="flex flex-col gap-10 mt-9">
         {!isMaintainer ? (
           <ButtonComp
             className="flex items-center  gap-2 bg-white p-3 text-black rounded-4xl cursor-pointer border hover:bg-gray-200"
             icon={<FaGithub size={30} />}
-            onClick={() => role && oAuth("github", role!, "register")}
+            onClick={() => role && oAuth("github", role!, action, token)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.2 }}
             transition={{ duration: 1 }}
@@ -107,7 +121,7 @@ export default function SignUp() {
         <ButtonComp
           className="flex items-center  gap-2 bg-white p-3 text-black rounded-4xl cursor-pointer border hover:bg-gray-200"
           icon={<FcGoogle size={30} />}
-          onClick={() => role && oAuth("google", role!, "register")}
+          onClick={() => role && oAuth("google", role!, action, token)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.2 }}
           transition={{ duration: 1 }}

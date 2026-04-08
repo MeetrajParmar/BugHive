@@ -1,5 +1,4 @@
 "use client";
-import Navbar from "@/component/dashboard/claims/Navbar";
 import { allClaim } from "@/lib/claims/allClaim";
 import { useQuery } from "@tanstack/react-query";
 import { use, useEffect, useRef, useState } from "react";
@@ -16,6 +15,7 @@ export default function EvidencePage({
   const { data, isLoading, isFetching, isError } = useQuery({
     queryKey: ["claims", { id: slugs }],
     queryFn: () => allClaim(slugs),
+    staleTime: 1000 * 60 * 60 * 5,
   });
   const isPresent = (data?.length ?? 0) > 0;
   const claimData = data?.[0] ?? null;
@@ -35,7 +35,7 @@ export default function EvidencePage({
     try {
       const link = inputRef.current?.value;
       const data = await addEvidences(link!, claimData?.pr_table.id!);
-      console.log("data:", data);
+      //console.log("data:", data);
       setSupplymentaryLink([...supplymentaryLink, link!]);
       setSubmit(!submit);
       setModal(!modal);
@@ -46,7 +46,7 @@ export default function EvidencePage({
   };
 
   useEffect(() => {
-    console.log("dors");
+    //console.log("dors");
     if (claimData?.pr_table.evidences) {
       setSupplymentaryLink(claimData.pr_table.evidences);
     }

@@ -1,21 +1,26 @@
+import { createClient } from "@/lib/supabase/client";
 import { jwtVerify } from "@/utils/jwt/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
+    const supabase = await createClient();
     const { searchParams } = new URL(req.url);
     const token = searchParams.get("token");
-    //console.log(token);
+
     if (!token) {
       return NextResponse.redirect("/noAccess");
     }
     const data = await jwtVerify(token);
+    console.log("DATA:", data);
+    // If the Contributor and Verifier are same.
+    if (data.contributor_email === data.verifier_email) {
+      return NextResponse.redirect("http://localhost:3000/noAccess");
+    }
 
     const current_Date = new Date().toLocaleDateString("en-US");
     const [current_date, current_month, current_year] = current_Date.split("/");
     const [sended_date, sended_month, sended_year] = data.sended_at.split("/");
-    console.log(current_date, current_month, current_year);
-    console.log(sended_date, sended_month, sended_year);
 
     if (current_year > sended_year) {
       return NextResponse.redirect("http://localhost:3000/noAccess");
@@ -27,6 +32,20 @@ export async function GET(req: NextRequest) {
       current_date > sended_date
     ) {
       return NextResponse.redirect("http://localhost:3000/noAccess");
+    }
+
+    const { data: activeSession, error: errorActiveSession } =
+      await supabase.auth.getSession();
+
+    if (errorActiveSession) {
+      console.log("VERIFIER RO:", errorActiveSession);
+      throw new Error(`error:${errorActiveSession}`);
+    }
+    console.log("SESSION:", activeSession);
+    if (activeSession) {
+      return NextResponse.redirect(
+        `http://localhost:3000/register?role=VERIFIER&token?=${token}&action=redirect`,
+      );
     }
 
     return NextResponse.json({ message: data }, { status: 200 });

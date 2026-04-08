@@ -2,7 +2,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { EmailSchemaType } from "@/lib/validations/emailLogin";
 import { findMaintainer } from "@/services/auth/findMaintainer";
-import { emailLogin } from "./email.login";
 
 export const EmailAction = async (Emaildata: EmailSchemaType, role: string) => {
   const supabase = await createClient();
@@ -25,4 +24,5 @@ export const EmailAction = async (Emaildata: EmailSchemaType, role: string) => {
   });
   // console.log("EMAIL:", data);
   console.log("EMAIL ERROR", error);
+  return { data: data, method: "login" };
 };

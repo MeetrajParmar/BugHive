@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
     const code = searchParams.get("code");
     const role = searchParams.get("role");
     const action = searchParams.get("action");
+    const token = searchParams.get("token");
 
     if (!code) {
       console.log("Error in getting GITHUB TOKEN.");
@@ -23,8 +24,6 @@ export async function GET(req: NextRequest) {
     }
 
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    console.log("Data:Session Details", data);
-    console.log("Provider Refresh Token", data.session?.provider_refresh_token);
     if (error) {
       console.log("Error in fetching GITHUB ERROR.", error);
       return NextResponse.json(
@@ -46,6 +45,20 @@ export async function GET(req: NextRequest) {
           );
         }
         return NextResponse.redirect(new URL("/dashboard/claims", req.url));
+      }
+
+      if (existingUser.role === "VERIFIER" && action === "redirect" && token) {
+        return NextResponse.redirect(
+          new URL(`/verify/claims/${token}`, req.url),
+        );
+      } else if (existingUser.role === "VERIFIER" && action === "register") {
+        return NextResponse.redirect(new URL("/verify/claims", req.url));
+      } else if (
+        existingUser.role === "CONTRIBUTOR" &&
+        action === "redirect" &&
+        token
+      ) {
+        return NextResponse.redirect(new URL("/dashboard/verifier", req.url));
       }
 
       if (existingUser.onboarding_complete) {
@@ -72,6 +85,12 @@ export async function GET(req: NextRequest) {
       await createUserGoogle(username, email, token, role!);
     }
 
+    if (role === "VERIFIER" && action === "redirect") {
+      return NextResponse.redirect(new URL(`/verify/claims/${token}`, req.url));
+    } else if (role === "VERIFIER" && action === "register") {
+      return NextResponse.redirect(new URL("/verify/claims", req.url));
+    }
+    
     return NextResponse.redirect(new URL("/onboarding", req.url));
   } catch (error: any) {
     console.log(error.message);
