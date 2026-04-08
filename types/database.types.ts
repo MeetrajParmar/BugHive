@@ -212,41 +212,66 @@ export type Database = {
       }
       verifications: {
         Row: {
-          claimid: string
+          claim_Id: string
+          codebase_impact: number | null
+          collaboration_quality: number | null
           created_at: string | null
+          descriptions: string | null
           id: string
-          sended_at: string | null
+          sent_at: string | null
           status: Database["public"]["Enums"]["verificationstatus"] | null
+          technical_complexity: number | null
           token: string | null
           updated_at: string | null
+          user_id: string
           verifier_email: string | null
+          would_recommend: boolean | null
         }
         Insert: {
-          claimid: string
+          claim_Id: string
+          codebase_impact?: number | null
+          collaboration_quality?: number | null
           created_at?: string | null
+          descriptions?: string | null
           id?: string
-          sended_at?: string | null
+          sent_at?: string | null
           status?: Database["public"]["Enums"]["verificationstatus"] | null
+          technical_complexity?: number | null
           token?: string | null
           updated_at?: string | null
+          user_id: string
           verifier_email?: string | null
+          would_recommend?: boolean | null
         }
         Update: {
-          claimid?: string
+          claim_Id?: string
+          codebase_impact?: number | null
+          collaboration_quality?: number | null
           created_at?: string | null
+          descriptions?: string | null
           id?: string
-          sended_at?: string | null
+          sent_at?: string | null
           status?: Database["public"]["Enums"]["verificationstatus"] | null
+          technical_complexity?: number | null
           token?: string | null
           updated_at?: string | null
+          user_id?: string
           verifier_email?: string | null
+          would_recommend?: boolean | null
         }
         Relationships: [
           {
-            foreignKeyName: "verifications_claimid_fkey"
-            columns: ["claimid"]
+            foreignKeyName: "verifications_claim_Id_fkey"
+            columns: ["claim_Id"]
             isOneToOne: false
             referencedRelation: "claims"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]

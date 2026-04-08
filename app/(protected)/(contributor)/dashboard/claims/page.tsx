@@ -1,6 +1,5 @@
 "use client";
 
-import Navbar from "@/component/dashboard/claims/Navbar";
 import { ButtonComp } from "@/component/ui/button";
 import { useState } from "react";
 import { ClaimsForm } from "@/component/dashboard/claimsForm/ClaimsForm";
@@ -14,6 +13,7 @@ export default function Claims() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["claims"],
     queryFn: () => allClaim(),
+    staleTime: 1000 * 60 * 60 * 5,
   });
 
   if (isError) {

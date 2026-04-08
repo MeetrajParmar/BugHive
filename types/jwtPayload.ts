@@ -1,6 +1,6 @@
 export type JWTPAYLOAD = {
   claimId: string;
-  contributor_id: string;
-  verifier_id: string;
+  contributor_email: string;
+  verifier_email: string;
   sended_at: string;
 };
