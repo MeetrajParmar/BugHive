@@ -219,7 +219,7 @@ export type Database = {
           descriptions: string | null
           id: string
           sent_at: string | null
-          status: Database["public"]["Enums"]["verificationstatus"] | null
+          status: Database["public"]["Enums"]["verificationstatus"]
           technical_complexity: number | null
           token: string | null
           updated_at: string | null
@@ -235,7 +235,7 @@ export type Database = {
           descriptions?: string | null
           id?: string
           sent_at?: string | null
-          status?: Database["public"]["Enums"]["verificationstatus"] | null
+          status?: Database["public"]["Enums"]["verificationstatus"]
           technical_complexity?: number | null
           token?: string | null
           updated_at?: string | null
@@ -251,7 +251,7 @@ export type Database = {
           descriptions?: string | null
           id?: string
           sent_at?: string | null
-          status?: Database["public"]["Enums"]["verificationstatus"] | null
+          status?: Database["public"]["Enums"]["verificationstatus"]
           technical_complexity?: number | null
           token?: string | null
           updated_at?: string | null

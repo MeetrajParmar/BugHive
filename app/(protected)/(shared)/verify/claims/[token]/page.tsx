@@ -2,7 +2,7 @@
 import { jwtVerify } from "@/utils/jwt/jwt";
 import { use, useEffect, useState } from "react";
 import { JWTPAYLOAD } from "@/types/jwtPayload";
-import Navbar from "@/component/dashboard/claims/Navbar";
+import Navbar from "@/component/common/Navbar";
 import { ButtonComp } from "@/component/ui/button";
 import { Step1 } from "@/component/verifier/verify/Step1";
 import { Step2 } from "@/component/verifier/verify/Step2";
@@ -43,17 +43,6 @@ export default function ClaimToken({
     decrypt();
   }, [token]);
 
-  if (!data?.claimId) {
-    return (
-      <>
-        <Navbar />
-        <div className="flex justify-center p-6">
-          <p className="animate-pulse text-center text-2xl">Loading...</p>
-        </div>
-      </>
-    );
-  }
-
   const stepForm = [
     <Step1 claimId={data?.claimId!} />,
     <Step2
@@ -79,9 +68,12 @@ export default function ClaimToken({
   const uVerification = async () => {
     if (currentStep > 3) return;
     if (currentStep === 3) {
+      if (description.length <= 5) {
+        return;
+      }
       setIsSubmitting(true);
       const data1 = await updateVerification(
-        data?.claimId,
+        data?.claimId!,
         technicalComplexity,
         codebaseImpact,
         collaborationQuality,
@@ -103,7 +95,6 @@ export default function ClaimToken({
 
   return (
     <>
-      <Navbar />
       <div className="flex justify-center p-6">
         <div className="bg-mist-900 border border-gray-200 rounded-xl p-3 w-full max-w-7/12">
           <div className="flex flex-row  justify-between">

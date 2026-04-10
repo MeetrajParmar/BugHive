@@ -13,7 +13,7 @@ export default function Navbar() {
   return (
     <motion.div className="bg-mist-950 z-19 h-16 flex flex-row justify-between items-center border-b border-white">
       <div>
-        <h1 className="text-white text-4xl px-5 font-bitcount ">
+        <h1 className="text-white text-4xl px-5 font-bitcount">
           Bug
           <span className="text-green-500 font-bitcount">Hive</span>
         </h1>

@@ -5,7 +5,7 @@ export async function oAuth(
   providerAuth: OAuthProvider,
   role: string,
   action: string,
-  token: string | null,
+  token?: string | null,
 ) {
   const supabase = createClient();
 

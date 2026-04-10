@@ -1,12 +1,11 @@
-"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PiCardsThree } from "react-icons/pi";
-import { IoSettingsOutline } from "react-icons/io5";
-import { FaUser } from "react-icons/fa";
 import { BiBadgeCheck } from "react-icons/bi";
+import { FaUser } from "react-icons/fa";
+import { IoSettingsOutline } from "react-icons/io5";
+import { PiCardsThree } from "react-icons/pi";
 
-export default function SideBar() {
+export function ContributorSidebar() {
   const pathname = usePathname();
   const isActive = (path: string) => pathname.includes(path);
   return (
@@ -18,9 +17,9 @@ export default function SideBar() {
         />
         <Link
           href="/dashboard/verifier"
-          className={`hover:text-blue-500 ${isActive("/dashboard/verifier") ? "text-blue-600 font-bold" : "text-white"}`}
+          className={` hover:text-gray-500 ${isActive("/dashboard/verifier") ? "text-blue-600 font-bold" : "text-white"}`}
         >
-          Verify Claim
+          Verify Claims
         </Link>
       </div>
 
@@ -31,7 +30,7 @@ export default function SideBar() {
         />
         <Link
           href="/dashboard/claims"
-          className={` hover:text-blue-500 ${isActive("/dashboard/claims") ? "text-blue-600 font-bold" : "text-white"}`}
+          className={` hover:text-gray-500 ${isActive("/dashboard/claims") ? "text-blue-600 font-bold" : "text-white"}`}
         >
           My Claims
         </Link>
@@ -51,7 +50,10 @@ export default function SideBar() {
         <IoSettingsOutline
           color={isActive("/settings") ? "#2563eb" : "white"}
         />
-        <Link href="/settings" className="text-white hover:text-gray-500">
+        <Link
+          href="/settings"
+          className={` hover:text-gray-500 ${isActive("/settings") ? "text-blue-600 font-bold" : "text-white"}`}
+        >
           Settings
         </Link>
       </div>

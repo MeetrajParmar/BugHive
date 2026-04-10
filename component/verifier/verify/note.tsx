@@ -2,7 +2,7 @@
 import { jwtVerify } from "@/utils/jwt/jwt";
 import { use, useEffect, useState } from "react";
 import { JWTPAYLOAD } from "@/types/jwtPayload";
-import Navbar from "@/component/dashboard/claims/Navbar";
+import Navbar from "@/component/common/Navbar";
 import { ButtonComp } from "@/component/ui/button";
 import { Step1 } from "@/component/verifier/verify/Step1";
 import { Step2 } from "@/component/verifier/verify/Step2";
