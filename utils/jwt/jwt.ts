@@ -4,9 +4,9 @@ import jwt from "jsonwebtoken";
 const key = process.env.JWT_SECRET_KEY!;
 export async function jwtSign(
   claimId: string,
-  contributor_email: string,
-  verifier_email: string,
-  sended_at: string,
+  contributor_email?: string,
+  verifier_email?: string,
+  sended_at?: string,
 ) {
   console.log(key);
   const token = await jwt.sign(

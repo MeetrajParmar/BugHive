@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export function Step3({
   description,
@@ -17,6 +17,22 @@ export function Step3({
   codebaseImpact: number;
   collaborationQuality: number;
 }) {
+  const [descriptionError, setDescriptionError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>();
+
+  useEffect(() => {
+    setDescriptionError(false);
+    setErrorMessage(null);
+    if (description.length <= 50) {
+      setDescriptionError(true);
+      setErrorMessage("Min Length Should be 50.");
+    }
+    if (description.length > 100) {
+      setDescriptionError(true);
+      setErrorMessage("Max Length Should be 100.");
+    }
+  }, [description]);
+
   return (
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-3 gap-5">
@@ -37,15 +53,16 @@ export function Step3({
       <div className="flex flex-col gap-2">
         <label>Description:</label>
         <textarea
-          className="border border-zinc-700 rounded p-2"
+          className={`border rounded p-2 ${descriptionError ? " border-red-500" : "border-zinc-700"}`}
           placeholder="Enter your reason"
-          maxLength={50}
+          maxLength={100}
           value={description}
           onChange={(e) => setDescription(String(e.target.value))}
         />
         <p className="text-sm text-right text-gray-500">
-          {description.length}/50
+          {description.length}/250
         </p>
+        {descriptionError && <p className="text-red-500">{errorMessage}</p>}
       </div>
 
       <div className="flex flex-row justify-between gap-2">
